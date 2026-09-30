@@ -57,10 +57,15 @@ jobs:
           brew test cachebag/zerobrew/zerobrew
           zb --version | grep -F "${{ steps.release.outputs.version }}"
 
+      # setup-homebrew rebuilds the tap's git setup, dropping the branch's
+      # upstream and the credentials actions/checkout configured, so push
+      # with the token directly.
       - name: Commit
         if: steps.release.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -am "zerobrew ${{ steps.release.outputs.version }}"
-          git push origin HEAD:main
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
