@@ -2,7 +2,7 @@ class Zerobrew < Formula
   desc "Fast package manager for Homebrew packages, written in Rust"
   homepage "https://github.com/lucasgelfond/zerobrew"
   # Explicit: Homebrew misreads the version from binary names like zb-linux-x64.
-  version "0.3.3"
+  version "0.3.5"
   license all_of: ["Apache-2.0", "MIT"]
 
   livecheck do
@@ -12,41 +12,41 @@ class Zerobrew < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zb-darwin-arm64"
-      sha256 "8f6e358a7d75164c1e1151713754345a25d7c8e4da4b640aab87e2606a49d7dc"
+      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zb-darwin-arm64"
+      sha256 "8b63820ed4f89b17edc799e8b90d046bb08e38749a5f5ea24a3ab098d395edc0"
 
       resource "zbx" do
-        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zbx-darwin-arm64"
-        sha256 "2e806e0da90e8c8dac26cc3ce16daf379957a5e001283306bc0db37bb1f93cc3"
+        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zbx-darwin-arm64"
+        sha256 "e6c370f4671d914b61f414500296893b322ce69642226a7c6720a81d8cb3aee9"
       end
     end
     on_intel do
-      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zb-darwin-x64"
-      sha256 "667c23db3c0d3dfdaec657a66b764c76b0095f5352b83d980eddd65552ae856c"
+      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zb-darwin-x64"
+      sha256 "f53985a7c6b66d9d859fcc6aab725b71ad8ec5406cbb980a53b2f2a185c0a5cf"
 
       resource "zbx" do
-        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zbx-darwin-x64"
-        sha256 "ce7e361964257296acf83c84b9a24ab1f4a68fd2c610825f9b2b4361289d0390"
+        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zbx-darwin-x64"
+        sha256 "81763445b13196e55ee562e889d45e3eed3c78018c7d4d851b1790da7257e3a2"
       end
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zb-linux-arm64"
-      sha256 "45cd80d26d6ce32f2392118da90559d0f2a1a7890a445e2d8a3cc4b9c9983069"
+      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zb-linux-arm64"
+      sha256 "ce0f811fb4c25df9107f749593850df0cc34e5debffda8bef14bc61213f624e3"
 
       resource "zbx" do
-        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zbx-linux-arm64"
+        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zbx-linux-arm64"
         sha256 "20330e973d8bfbed8c695536234ce87631b9b0221d7aa1b6fff33b12f19ac596"
       end
     end
     on_intel do
-      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zb-linux-x64"
-      sha256 "75b7663061956f5558cc779497a7ec53188733c3db5b99398c5a194b6f1dfd8d"
+      url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zb-linux-x64"
+      sha256 "faaaa67f60020b95838c9bddb795aad059d6b5567a9a21763314d9af15f4d8ac"
 
       resource "zbx" do
-        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.3/zbx-linux-x64"
+        url "https://github.com/lucasgelfond/zerobrew/releases/download/v0.3.5/zbx-linux-x64"
         sha256 "280f26ba6f315299b61963e3dc29ab715ff9ef5ca1c20cba1ab68ffc06bd5153"
       end
     end
