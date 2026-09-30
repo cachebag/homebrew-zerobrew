@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Regenerate Formula/zerobrew.rb for a zerobrew release.
+# Usage: bin/update-formula <version> <path to the release's SHA256SUMS>
+set -euo pipefail
+
+version="${1:?usage: bin/update-formula <version> <SHA256SUMS>}"
+sums="${2:?usage: bin/update-formula <version> <SHA256SUMS>}"
+version="${version#v}"
+
+sha() {
+    local sum
+    sum=$(awk -v f="$1" '$2 == f { print $1 }' "$sums")
+    [[ "$sum" =~ ^[0-9a-f]{64}$ ]] || { echo "error: no checksum for $1 in $sums" >&2; exit 1; }
+    echo "$sum"
+}
+
+base="https://github.com/lucasgelfond/zerobrew/releases/download/v${version}"
+formula="$(dirname "$0")/../Formula/zerobrew.rb"
+
+cat > "$formula" <<EOF
+class Zerobrew < Formula
+  desc "Fast package manager for Homebrew packages, written in Rust"
+  homepage "https://github.com/lucasgelfond/zerobrew"
+  # Explicit: Homebrew misreads the version from binary names like zb-linux-x64.
+  version "${version}"
+  license all_of: ["Apache-2.0", "MIT"]
+
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
+  on_macos do
+    on_arm do
+      url "${base}/zb-darwin-arm64"
+      sha256 "$(sha zb-darwin-arm64)"
+
+      resource "zbx" do
+        url "${base}/zbx-darwin-arm64"
+        sha256 "$(sha zbx-darwin-arm64)"
+      end
+    end
+    on_intel do
+      url "${base}/zb-darwin-x64"
+      sha256 "$(sha zb-darwin-x64)"
+
+      resource "zbx" do
+        url "${base}/zbx-darwin-x64"
+        sha256 "$(sha zbx-darwin-x64)"
+      end
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "${base}/zb-linux-arm64"
+      sha256 "$(sha zb-linux-arm64)"
+
+      resource "zbx" do
+        url "${base}/zbx-linux-arm64"
+        sha256 "$(sha zbx-linux-arm64)"
+      end
+    end
+    on_intel do
+      url "${base}/zb-linux-x64"
+      sha256 "$(sha zb-linux-x64)"
+
+      resource "zbx" do
+        url "${base}/zbx-linux-x64"
+        sha256 "$(sha zbx-linux-x64)"
+      end
+    end
+  end
+
+  def install
+    bin.install Dir["zb-*"].first => "zb"
+    resource("zbx").stage { bin.install Dir["zbx-*"].first => "zbx" }
+  end
+
+  def caveats
+    <<~EOS
+      Run \`zb init\` to set up zerobrew's directories and shell config.
+    EOS
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/zb --version")
+    assert_match "Usage: zb run", shell_output("#{bin}/zbx --help")
+  end
+end
+EOF
+echo "wrote $formula for ${version}"

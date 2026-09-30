@@ -1,0 +1,55 @@
+name: update
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update formula to the latest zerobrew release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag=$(gh release view --repo lucasgelfond/zerobrew --json tagName --jq .tagName)
+          version="${tag#v}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if grep -qF "version \"$version\"" Formula/zerobrew.rb; then
+            echo "Formula is already at $version"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh release download "$tag" --repo lucasgelfond/zerobrew --pattern SHA256SUMS --dir "$RUNNER_TEMP"
+          bin/update-formula "$version" "$RUNNER_TEMP/SHA256SUMS"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Homebrew
+        if: steps.release.outputs.changed == 'true'
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Install and test
+        if: steps.release.outputs.changed == 'true'
+        run: |
+          brew install cachebag/zerobrew/zerobrew
+          brew test cachebag/zerobrew/zerobrew
+
+      - name: Commit
+        if: steps.release.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "zerobrew ${{ steps.release.outputs.version }}"
+          git push
