@@ -24,7 +24,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag=$(gh release view --repo lucasgelfond/zerobrew --json tagName --jq .tagName)
+          tag=$(gh release view --repo zerobrewhq/zerobrew --json tagName --jq .tagName)
           version="${tag#v}"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -47,14 +47,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release download "${{ steps.release.outputs.tag }}" --repo lucasgelfond/zerobrew --pattern SHA256SUMS --dir "$RUNNER_TEMP"
+          gh release download "${{ steps.release.outputs.tag }}" --repo zerobrewhq/zerobrew --pattern SHA256SUMS --dir "$RUNNER_TEMP"
           bin/update-formula "${{ steps.release.outputs.version }}" "$RUNNER_TEMP/SHA256SUMS"
 
       - name: Install and test
         if: steps.release.outputs.changed == 'true'
         run: |
-          brew install cachebag/zerobrew/zerobrew
-          brew test cachebag/zerobrew/zerobrew
+          brew install zerobrewhq/zerobrew/zerobrew
+          brew test zerobrewhq/zerobrew/zerobrew
           zb --version | grep -F "${{ steps.release.outputs.version }}"
 
       # setup-homebrew rebuilds the tap's git setup, dropping the branch's

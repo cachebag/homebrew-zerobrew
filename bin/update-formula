@@ -14,13 +14,13 @@ sha() {
     echo "$sum"
 }
 
-base="https://github.com/lucasgelfond/zerobrew/releases/download/v${version}"
+base="https://github.com/zerobrewhq/zerobrew/releases/download/v${version}"
 formula="$(dirname "$0")/../Formula/zerobrew.rb"
 
 cat > "$formula" <<EOF
 class Zerobrew < Formula
   desc "Fast package manager for Homebrew packages, written in Rust"
-  homepage "https://github.com/lucasgelfond/zerobrew"
+  homepage "https://github.com/zerobrewhq/zerobrew"
   # Explicit: Homebrew misreads the version from binary names like zb-linux-x64.
   version "${version}"
   license all_of: ["Apache-2.0", "MIT"]
